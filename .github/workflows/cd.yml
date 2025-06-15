@@ -3,8 +3,8 @@ name: CD Pipeline
 on:
   push:
     branches:
-      - bayanna         # use your actual branch name
-  workflow_dispatch:     # optional, for manual triggering from GitHub UI
+      - bayanna         # Use your working branch
+  workflow_dispatch:     # Optional manual trigger
 
 jobs:
   deploy:
@@ -18,19 +18,24 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        run: |
-          echo "✅ Credentials set."
+        run: echo "✅ AWS credentials configured."
 
-      - name: Install Terraform
+      - name: Install Terraform CLI
         uses: hashicorp/setup-terraform@v3
+
+      - name: List Terraform files
+        run: ls -R
+        working-directory: terraform
 
       - name: Terraform Init
         run: terraform init
+        working-directory: terraform
 
       - name: Terraform Validate
         run: terraform validate
+        working-directory: terraform
 
-      # Optional: Apply infrastructure changes (uncomment only if needed)
       - name: Terraform Apply
         run: terraform apply -auto-approve
+        working-directory: terraform
 
