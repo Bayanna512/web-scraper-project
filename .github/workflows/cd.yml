@@ -31,6 +31,6 @@ jobs:
         run: terraform validate
 
       # Optional: Add apply step if needed
-      # - name: Terraform Apply
-      #   run: terraform apply -auto-approve
+       - name: Terraform Apply
+         run: terraform apply -auto-approve
 
