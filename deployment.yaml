@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-scraper-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: web-scraper-app
+  template:
+    metadata:
+      labels:
+        app: web-scraper-app
+    spec:
+      containers:
+      - name: web-scraper-app
+        image: web-scraper-project:latest
+        ports:
+        - containerPort: 80
+

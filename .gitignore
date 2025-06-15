@@ -2,6 +2,15 @@
 __pycache__/
 *.py[cod]
 *$py.class
+# macOS system files
+.DS_Store
+
+# PyCharm / IntelliJ or other JetBrains IDEs
+.idea/
+
+# Python cache
+__pycache__/
+*.pyc
 
 # C extensions
 *.so
