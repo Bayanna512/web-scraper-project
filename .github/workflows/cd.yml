@@ -30,7 +30,7 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
-      # Optional: Add apply step if needed
-       - name: Terraform Apply
-         run: terraform apply -auto-approve
+      # Optional: Apply infrastructure changes (uncomment only if needed)
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
 
