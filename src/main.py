@@ -2,10 +2,17 @@ import os
 import io
 import pandas as pd
 import boto3
+import dateparser
 from src.html_scraper import fetch_press_releases
 from src.pdf_parser import process_pdf
 from src.translator import GoogleTranslator, translate_text
 from config import CSV_OUTPUT_FILE, S3_BUCKET, S3_PREFIX
+
+def normalize_date(date_str):
+    dt = dateparser.parse(date_str, languages=['ja', 'en'])
+    if dt:
+        return dt.strftime('%Y-%m-%d')
+    return date_str  # fallback if parsing fails
 
 translator = GoogleTranslator(source='auto', target='en')
 all_records = []
@@ -15,6 +22,10 @@ for idx, record in enumerate(fetch_press_releases(), 1):
         record["title_en"] = translate_text(record["title_jp"], translator)
     except Exception:
         record["title_en"] = "[TRANSLATION ERROR]"
+
+    # Normalize Japanese dates dynamically (if date key exists)
+    if "date" in record:
+        record["date"] = normalize_date(record["date"])
 
     if record["pdf_link"].lower().endswith(".pdf"):
         process_pdf(record, translator, idx)
