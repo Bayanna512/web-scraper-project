@@ -1,0 +1,43 @@
+name: CD Pipeline
+
+on:
+  workflow_run:
+    workflows: ["CI Pipeline"]   
+    types:
+      - completed
+
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}  # only run if CI succeeded
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Install Terraform CLI
+        uses: hashicorp/setup-terraform@v3
+
+      - name: List Terraform files
+        run: ls -R
+        working-directory: Terraform
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: Terraform
+
+      - name: Terraform Validate
+        run: terraform validate
+        working-directory: Terraform
+
+      # Uncomment to deploy
+      # - name: Terraform Apply
+      #   run: terraform apply -auto-approve
+      #   working-directory: Terraform
